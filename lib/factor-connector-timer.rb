@@ -1,12 +1,14 @@
-require 'factor-connector-api'
+require 'factor/connector/definition'
 require 'rufus-scheduler'
 
-Factor::Connector.service 'timer' do
-  listener 'every' do
-    start do |params|
-      hours   = params['hours']
-      minutes = params['minutes']
-      seconds = params['seconds']
+class Timer < Factor::Connector::Definition
+  id :timer
+
+  listener :every do
+    start do |parmas|
+      hours   = params[:hour]
+      minutes = params[:minute]
+      seconds = params[:second]
       times   = [hours, minutes, seconds]
 
       fail 'hours, minutes, or seconds, but only one can be used' if times.count { |t| !t.nil? } > 1
@@ -30,32 +32,30 @@ Factor::Connector.service 'timer' do
       end
 
     end
-    stop do |_data|
+
+    stop do
       @scheduler.stop
     end
   end
 
-  listener 'cron' do
-
-    scheduler = Rufus::Scheduler.new
-
-    start do |data|
+  listener :cron do
+    start do |params|
       crontab = data['crontab']
       info "Starting timer using the crontab `#{crontab}`"
 
       fail 'No crontab specified' if !crontab || crontab.empty?
 
       begin
-        scheduler.cron crontab do
+        @scheduler.cron crontab do
           start_workflow time_run: Time.now.to_s
         end
       rescue => ex
         fail "The crontab entry `#{crontab}` was invalid.", exception: ex
       end
-
     end
-    stop do |_data|
-      scheduler.stop
+
+    stop do
+      @scheduler.stop
     end
   end
 end
