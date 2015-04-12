@@ -5,7 +5,7 @@ class Timer < Factor::Connector::Definition
   id :timer
 
   listener :every do
-    start do |parmas|
+    start do |params|
       hours   = params[:hour]
       minutes = params[:minute]
       seconds = params[:second]
@@ -25,7 +25,7 @@ class Timer < Factor::Connector::Definition
         @scheduler.every every do
           time = Time.now.to_s
           info "Trigger time at #{time}"
-          start_workflow time_run: time
+          trigger time_run: time
         end
       rescue
         fail "The time specified `#{every}` is invalid"
@@ -40,14 +40,14 @@ class Timer < Factor::Connector::Definition
 
   listener :cron do
     start do |params|
-      crontab = data['crontab']
+      crontab = params['crontab']
       info "Starting timer using the crontab `#{crontab}`"
 
       fail 'No crontab specified' if !crontab || crontab.empty?
 
       begin
         @scheduler.cron crontab do
-          start_workflow time_run: Time.now.to_s
+          trigger time_run: Time.now.to_s
         end
       rescue => ex
         fail "The crontab entry `#{crontab}` was invalid.", exception: ex

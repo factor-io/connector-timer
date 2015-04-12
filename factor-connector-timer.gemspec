@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email         = ['maciej@factor.io']
   s.homepage      = 'https://factor.io'
   s.summary       = 'Timer Factor.io Connector'
-  s.files         = ['lib/factor/connector/timer.rb']
+  s.files         = ['lib/factor-connector-timer.rb']
   
   s.require_paths = ['lib']
 
