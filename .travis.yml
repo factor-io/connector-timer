@@ -5,7 +5,7 @@ rvm:
 - 2.2.0
 - 2.2.1
 env:
-  global:
+  matrix:
     secure: F7Y7njqLFKO9Sqf1De/6xwaoozAbkrhfuCs1OGoWu5Oils7pUqfAecRZlJAsgWHF4ZecSq96sXl+uBnAjY6EoKLj2a98RmHdywkbodhxy1IF7xxZCm5KdXL7wfLJrt86f3oqkEYVgyvpNIk3jof6/n1hg1aW5zd0J7QbOjUXShM=
 deploy:
   provider: rubygems
