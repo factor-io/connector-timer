@@ -4,11 +4,15 @@ require 'rufus-scheduler'
 class Timer < Factor::Connector::Definition
   id :timer
 
+  def initialize
+    @scheduler = Rufus::Scheduler.new
+  end
+
   listener :every do
     start do |params|
-      hours   = params[:hour]
-      minutes = params[:minute]
-      seconds = params[:second]
+      hours   = params[:hours]
+      minutes = params[:minutes]
+      seconds = params[:seconds]
       times   = [hours, minutes, seconds]
 
       fail 'hours, minutes, or seconds, but only one can be used' if times.count { |t| !t.nil? } > 1
@@ -20,7 +24,6 @@ class Timer < Factor::Connector::Definition
 
       info "Starting timer every #{every}"
 
-      @scheduler = Rufus::Scheduler.new
       begin
         @scheduler.every every do
           time = Time.now.to_s
@@ -40,17 +43,18 @@ class Timer < Factor::Connector::Definition
 
   listener :cron do
     start do |params|
-      crontab = params['crontab']
+      crontab = params[:crontab]
+      
+      fail 'Crontab (:crontab) is a required string' unless crontab && crontab.is_a?(String)
+      fail 'Crontab (:crontab) must have 5 or 6 time components' unless crontab.split(' ').count.between?(5,6)
+
       info "Starting timer using the crontab `#{crontab}`"
-
-      fail 'No crontab specified' if !crontab || crontab.empty?
-
       begin
         @scheduler.cron crontab do
           trigger time_run: Time.now.to_s
         end
       rescue => ex
-        fail "The crontab entry `#{crontab}` was invalid.", exception: ex
+        fail "The crontab entry `#{crontab}` was invalid: #{ex.message}"
       end
     end
 
