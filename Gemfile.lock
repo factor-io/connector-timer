@@ -14,7 +14,7 @@ GIT
 PATH
   remote: .
   specs:
-    factor-connector-timer (1.9.01)
+    factor-connector-timer (3.0.0)
       rufus-scheduler (~> 3.0.9)
 
 GEM
