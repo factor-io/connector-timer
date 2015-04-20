@@ -43,9 +43,8 @@ class Timer < Factor::Connector::Definition
 
   listener :cron do
     start do |params|
-      crontab = params[:crontab]
+      crontab = params.varify(:crontab,required:true,is_a:String)
       
-      fail 'Crontab (:crontab) is a required string' unless crontab && crontab.is_a?(String)
       fail 'Crontab (:crontab) must have 5 or 6 time components' unless crontab.split(' ').count.between?(5,6)
 
       info "Starting timer using the crontab `#{crontab}`"
