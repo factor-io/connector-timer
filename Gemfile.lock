@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/factor-io/factor.git
-  revision: 727d441ed30fcd25bd4f710bc55c5f5f61180feb
+  revision: 696b6586996d29e38242e267ea7211bd89a7598a
   branch: agentless
   specs:
-    factor (2.9.05)
+    factor (2.9.06)
       commander (~> 4.3, >= 4.3.0)
       configatron (~> 4.5, >= 4.5.0)
       rainbow (~> 2.0, >= 2.0.0)
@@ -16,7 +16,7 @@ PATH
   remote: .
   specs:
     factor-connector-timer (3.0.0)
-      rufus-scheduler (~> 3.1.0)
+      rufus-scheduler (~> 3.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -71,7 +71,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    varify (0.0.2)
+    varify (0.0.3)
     wrong (0.7.1)
       diff-lcs (~> 1.2.5)
       predicated (~> 0.2.6)
