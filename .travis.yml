@@ -1,20 +1,4 @@
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.3
-  - 2.1.5
-  - 2.2.0
-  - 2.2.1
-  - 2.2.2
-env:
-  matrix:
-    secure: F7Y7njqLFKO9Sqf1De/6xwaoozAbkrhfuCs1OGoWu5Oils7pUqfAecRZlJAsgWHF4ZecSq96sXl+uBnAjY6EoKLj2a98RmHdywkbodhxy1IF7xxZCm5KdXL7wfLJrt86f3oqkEYVgyvpNIk3jof6/n1hg1aW5zd0J7QbOjUXShM=
-deploy:
-  provider: rubygems
-  gem: factor-connector-timer
-  api_key:
-    secure: mMY5ZBtkbojnbXBLCnMpvdokLoJU+RbeafrQ3CZpOGXK4+mg8hoY79kdNIYNImF4bhOh3G0Ol0ByCsBGcciX1hknWLyrv8ZNNxlhoDLgTozcTIi8Zyd1SkRD360LUxGn5cDOgX+7o226zh6p2B742dVcgIf8Y469cGxT855DpBg=
-  on:
-    tags: true
-    all_branches: true
+  - 2.2.5
+  - 2.3.1
