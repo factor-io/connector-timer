@@ -1,38 +1,35 @@
 require 'spec_helper'
 
-describe Timer do
-  before :each do
-    @runtime = Factor::Connector::Runtime.new(Timer)
-  end
-
+describe :timer do
   describe :every do
     it 'can run every second' do
-      @runtime.start_listener([:every], seconds:1)
-      expect(@runtime).to message info:'Starting timer every 1s'
-      expect(@runtime).to trigger
-      @runtime.stop_listener
-    end
+      logger = double("logger", trigger:'hi')
+      timer = Timer::Every.new(seconds:1)
+      timer.add_observer(logger, :trigger)
 
-    it 'fails with bad time' do
-      @runtime.start_listener([:every], foo:'notime')
+      t = Thread.new {timer.run}
 
-      expect(@runtime).to fail 
+      expect(logger).to receive(:trigger).with(:trigger,hash_including(time_run: anything())) do
+        t.kill
+      end
+      
+      t.join
     end
   end
 
   describe :crontab do
     it 'can run a crontab' do
-      crontab = '* * * * * *'
-      @runtime.start_listener([:cron], crontab:crontab)
-      expect(@runtime).to message info:"Starting timer using the crontab `#{crontab}`"
-      expect(@runtime).to trigger
-      @runtime.stop_listener
-    end
+      logger = double("logger", trigger:'hi')
+      timer = Timer::Cron.new(crontab:'* * * * * *')
+      timer.add_observer(logger, :trigger)
 
-    it 'fails with bad time' do
-      @runtime.start_listener([:cron], crontab:'notime')
+      t = Thread.new { timer.run }
 
-      expect(@runtime).to fail 
+      expect(logger).to receive(:trigger).with(:trigger,hash_including(time_run: anything())) do
+        t.kill
+      end
+      
+      t.join
     end
   end
 end

@@ -1,18 +1,27 @@
-require 'factor/connector/definition'
+require 'factor/connector'
 require 'rufus-scheduler'
 
-class Timer < Factor::Connector::Definition
-  id :timer
+module Timer
+  class Scheduled < Factor::Connector
+    def initialize(options={})
+      @scheduler = Rufus::Scheduler.new
+      @options = options
+    end
 
-  def initialize
-    @scheduler = Rufus::Scheduler.new
+    protected
+
+    def block
+      begin
+        sleep 1
+      end while true
+    end
   end
 
-  listener :every do
-    start do |params|
-      hours   = params[:hours]
-      minutes = params[:minutes]
-      seconds = params[:seconds]
+  class Every < Scheduled
+    def run
+      hours   = @options[:hours]
+      minutes = @options[:minutes]
+      seconds = @options[:seconds]
       times   = [hours, minutes, seconds]
 
       fail 'hours, minutes, or seconds, but only one can be used' if times.count { |t| !t.nil? } > 1
@@ -27,23 +36,20 @@ class Timer < Factor::Connector::Definition
       begin
         @scheduler.every every do
           time = Time.now.to_s
-          info "Trigger time at #{time}"
+          # info "Trigger time at #{time}"
           trigger time_run: time
         end
       rescue
         fail "The time specified `#{every}` is invalid"
       end
 
-    end
-
-    stop do
-      @scheduler.stop
+      block
     end
   end
 
-  listener :cron do
-    start do |params|
-      crontab = params.varify(:crontab,required:true,is_a:String)
+  class Cron < Scheduled
+    def run
+      crontab = @options[:crontab]
       
       fail 'Crontab (:crontab) must have 5 or 6 time components' unless crontab.split(' ').count.between?(5,6)
 
@@ -55,10 +61,10 @@ class Timer < Factor::Connector::Definition
       rescue => ex
         fail "The crontab entry `#{crontab}` was invalid: #{ex.message}"
       end
-    end
-
-    stop do
-      @scheduler.stop
+      block
     end
   end
 end
+
+Factor::Connector.register(Timer::Every)
+Factor::Connector.register(Timer::Cron)
