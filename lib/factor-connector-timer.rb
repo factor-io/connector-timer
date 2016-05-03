@@ -4,16 +4,24 @@ require 'rufus-scheduler'
 module Timer
   class Scheduled < Factor::Connector
     def initialize(options={})
-      @scheduler = Rufus::Scheduler.new
-      @options = options
+      @scheduler     = Rufus::Scheduler.new
+      @options       = options
+      @keep_blocking = true
     end
 
     protected
 
     def block
       begin
-        sleep 1
-      end while true
+        sleep 0.1
+      end while @keep_blocking
+      info "Timer stopped"
+      @keep_blocking = true
+    end
+
+    def stop
+      info "Stopping timer"
+      @keep_blocking = false
     end
   end
 
@@ -36,7 +44,6 @@ module Timer
       begin
         @scheduler.every every do
           time = Time.now.to_s
-          # info "Trigger time at #{time}"
           trigger time_run: time
         end
       rescue
